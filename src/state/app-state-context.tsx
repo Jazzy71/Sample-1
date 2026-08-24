@@ -7,28 +7,40 @@ import {
 } from "react"
 
 import type { WorkflowStage } from "@/types/workflow"
+import type { ParseResult } from "@/lib/excel/worker"
+import type { NormalizedProcurementRow } from "@/lib/excel/schema"
 
 interface AppStateContextValue {
   workflowStage: WorkflowStage
   setWorkflowStage: (stage: WorkflowStage) => void
-  uploadedFileName: string | null
-  setUploadedFileName: (name: string | null) => void
+  uploadedFile: File | null
+  setUploadedFile: (file: File | null) => void
+  parseResult: ParseResult | null
+  setParseResult: (result: ParseResult | null) => void
+  normalizedData: NormalizedProcurementRow[]
+  setNormalizedData: (data: NormalizedProcurementRow[]) => void
 }
 
 const AppStateContext = createContext<AppStateContextValue | null>(null)
 
 export function AppStateProvider({ children }: { children: ReactNode }) {
   const [workflowStage, setWorkflowStage] = useState<WorkflowStage>("idle")
-  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null)
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null)
+  const [parseResult, setParseResult] = useState<ParseResult | null>(null)
+  const [normalizedData, setNormalizedData] = useState<NormalizedProcurementRow[]>([])
 
   const value = useMemo(
     () => ({
       workflowStage,
       setWorkflowStage,
-      uploadedFileName,
-      setUploadedFileName,
+      uploadedFile,
+      setUploadedFile,
+      parseResult,
+      setParseResult,
+      normalizedData,
+      setNormalizedData,
     }),
-    [workflowStage, uploadedFileName]
+    [workflowStage, uploadedFile, parseResult, normalizedData]
   )
 
   return (

@@ -1,16 +1,17 @@
 import type { LucideIcon } from "lucide-react"
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { AnimatedNumber } from "@/components/common/AnimatedNumber"
 import { cn } from "@/lib/utils"
 
 interface KpiCardProps {
   label: string
   icon?: LucideIcon
   /**
-   * Real values are supplied once the Phase 2/3 data and analytics
-   * layers exist. Omitting it renders the card's placeholder state.
+   * Numeric value for animation, or string for static text.
    */
   value?: string | number
+  formatter?: (val: number) => string
   helperText?: string
   className?: string
 }
@@ -19,10 +20,19 @@ export function KpiCard({
   label,
   icon: Icon,
   value,
+  formatter,
   helperText,
   className,
 }: KpiCardProps) {
   const hasValue = value !== undefined
+
+  const renderValue = () => {
+    if (!hasValue) return "—"
+    if (typeof value === "number") {
+      return <AnimatedNumber value={value} formatFn={formatter} />
+    }
+    return value
+  }
 
   return (
     <Card className={cn("gap-3", className)}>
@@ -41,7 +51,7 @@ export function KpiCard({
             !hasValue && "text-muted-foreground/40"
           )}
         >
-          {hasValue ? value : "—"}
+          {renderValue()}
         </p>
         <p className="text-xs text-muted-foreground">
           {hasValue ? helperText : "Awaiting workbook data"}

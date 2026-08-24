@@ -16,12 +16,12 @@ import { useAppState } from "@/state/app-state-context"
 
 export function LandingUploadPage() {
   const navigate = useNavigate()
-  const { setWorkflowStage, setUploadedFileName } = useAppState()
+  const { setWorkflowStage, setUploadedFile } = useAppState()
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
   const handleContinue = () => {
     if (!selectedFile) return
-    setUploadedFileName(selectedFile.name)
+    setUploadedFile(selectedFile)
     setWorkflowStage("uploading")
     navigate("/processing")
   }

@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Circle, Loader2 } from "lucide-react"
+import { Circle, Loader2, CheckCircle, AlertTriangle } from "lucide-react"
 
 import {
   Card,
@@ -12,15 +13,48 @@ import {
 import { Button } from "@/components/ui/button"
 import { useAppState } from "@/state/app-state-context"
 
-const STEPS = [
-  "Reading workbook structure",
-  "Detecting sheets and columns",
-  "Validating procurement data",
-]
+import ExcelWorker from "@/lib/excel/worker?worker"
+import type { WorkerMessage } from "@/lib/excel/worker"
 
 export function ProcessingPage() {
   const navigate = useNavigate()
-  const { uploadedFileName, setWorkflowStage } = useAppState()
+  const { uploadedFile, setWorkflowStage, setParseResult } = useAppState()
+  
+  const [status, setStatus] = useState<string>("Initializing...")
+  const [error, setError] = useState<string | null>(null)
+  const [isDone, setIsDone] = useState(false)
+
+  useEffect(() => {
+    if (!uploadedFile) {
+      navigate("/")
+      return
+    }
+
+    const worker = new ExcelWorker()
+
+    worker.onmessage = (e: MessageEvent<WorkerMessage>) => {
+      const msg = e.data
+      if (msg.type === "PROGRESS") {
+        setStatus(msg.payload)
+      } else if (msg.type === "SUCCESS") {
+        setParseResult(msg.payload)
+        setStatus("Processing complete")
+        setIsDone(true)
+        worker.terminate()
+      } else if (msg.type === "ERROR") {
+        setError(msg.payload)
+        setStatus("Processing failed")
+        setIsDone(true)
+        worker.terminate()
+      }
+    }
+
+    worker.postMessage(uploadedFile)
+
+    return () => {
+      worker.terminate()
+    }
+  }, [uploadedFile, navigate, setParseResult])
 
   const handleContinue = () => {
     setWorkflowStage("workbook-review")
@@ -31,31 +65,36 @@ export function ProcessingPage() {
     <Card>
       <CardHeader className="text-center">
         <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-primary/10">
-          <Loader2 className="size-6 animate-spin text-primary" aria-hidden="true" />
+          {!isDone ? (
+            <Loader2 className="size-6 animate-spin text-primary" aria-hidden="true" />
+          ) : error ? (
+            <AlertTriangle className="size-6 text-destructive" aria-hidden="true" />
+          ) : (
+            <CheckCircle className="size-6 text-primary" aria-hidden="true" />
+          )}
         </div>
         <CardTitle className="font-heading text-xl">
           Analyzing your workbook
         </CardTitle>
         <CardDescription>
-          {uploadedFileName ?? "Your workbook"} is being prepared. This step
-          will connect to the Excel intelligence engine in a later phase.
+          {uploadedFile?.name ?? "Your workbook"} is being processed by the Excel intelligence engine.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ul className="space-y-3">
-          {STEPS.map((step) => (
-            <li
-              key={step}
-              className="flex items-center gap-3 rounded-lg border border-dashed px-3 py-2.5 text-sm text-muted-foreground"
-            >
-              <Circle className="size-3.5 shrink-0" aria-hidden="true" />
-              {step}
-            </li>
-          ))}
-        </ul>
+        <div className="flex items-center gap-3 rounded-lg border border-dashed px-3 py-2.5 text-sm text-muted-foreground">
+          <Circle className="size-3.5 shrink-0" aria-hidden="true" />
+          {status}
+        </div>
+        {error && (
+          <div className="mt-4 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+            {error}
+          </div>
+        )}
       </CardContent>
       <CardFooter className="justify-end">
-        <Button onClick={handleContinue}>Continue</Button>
+        <Button onClick={handleContinue} disabled={!isDone || !!error}>
+          Continue
+        </Button>
       </CardFooter>
     </Card>
   )

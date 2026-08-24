@@ -1,48 +1,105 @@
-import { ClipboardList } from "lucide-react"
+import { Printer, FileText } from "lucide-react"
 
 import { PageHeader } from "@/components/common/PageHeader"
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-
-const REPORT_TYPES = [
-  { title: "Spend Summary", description: "Overview of total spend by category and vendor." },
-  { title: "Vendor Performance", description: "Comparative breakdown across vendors." },
-  { title: "Data Quality Report", description: "Validation and completeness summary." },
-]
+import { useAnalytics } from "@/hooks/use-analytics"
+import { formatCurrency, formatNumber } from "@/lib/formatters"
 
 export function ReportsPage() {
+  const { hasData, kpis } = useAnalytics()
+
+  const handlePrint = () => {
+    window.print()
+  }
+
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Reports"
-        description="Generate shareable procurement reports from your analyzed data."
-      />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 print:hidden">
+        <PageHeader
+          title="Reports"
+          description="Generate shareable procurement reports from your analyzed data."
+        />
+        {hasData && (
+          <Button onClick={handlePrint} className="shrink-0 gap-2">
+            <Printer className="size-4" />
+            Print / Save as PDF
+          </Button>
+        )}
+      </div>
 
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
-        {REPORT_TYPES.map((report) => (
-          <Card key={report.title}>
-            <CardHeader className="flex-row items-center gap-2">
-              <ClipboardList className="size-4 text-muted-foreground" aria-hidden="true" />
-              <CardTitle className="text-sm font-medium">{report.title}</CardTitle>
+      {!hasData ? (
+        <Card className="print:hidden">
+          <CardHeader>
+            <CardTitle>No data available</CardTitle>
+            <CardDescription>Upload a workbook to unlock reporting capabilities.</CardDescription>
+          </CardHeader>
+        </Card>
+      ) : (
+        <div className="space-y-8 print:block">
+          
+          {/* Printable Report Header */}
+          <div className="hidden print:block space-y-2 mb-8">
+            <h1 className="text-3xl font-bold tracking-tight">Procurement Summary Report</h1>
+            <p className="text-muted-foreground">Generated via ProcureLens</p>
+            <hr className="my-4" />
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardDescription>Total Spend</CardDescription>
+                <CardTitle className="text-3xl">{kpis ? formatCurrency(kpis.totalSpend) : "-"}</CardTitle>
+              </CardHeader>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardDescription>Vendors</CardDescription>
+                <CardTitle className="text-3xl">{kpis ? formatNumber(kpis.uniqueVendors) : "-"}</CardTitle>
+              </CardHeader>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardDescription>Materials</CardDescription>
+                <CardTitle className="text-3xl">{kpis ? formatNumber(kpis.uniqueMaterials) : "-"}</CardTitle>
+              </CardHeader>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardDescription>Avg Order Value</CardDescription>
+                <CardTitle className="text-3xl">{kpis ? formatCurrency(kpis.averageOrderValue) : "-"}</CardTitle>
+              </CardHeader>
+            </Card>
+          </div>
+
+          <Card className="print:break-inside-avoid">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="size-5" />
+                Executive Summary
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <CardDescription>{report.description}</CardDescription>
+              <p className="leading-relaxed text-muted-foreground">
+                This report summarizes {kpis?.uniqueMaterials} unique materials procured from {kpis?.uniqueVendors} active vendors. 
+                The total expenditure for this period amounts to {kpis ? formatCurrency(kpis.totalSpend) : ""}, 
+                with an average order value of {kpis ? formatCurrency(kpis.averageOrderValue) : ""}. 
+                Please refer to the Insights tab for detailed anomaly detection and cost-saving recommendations.
+              </p>
             </CardContent>
-            <CardFooter>
-              <Button variant="outline" size="sm" disabled className="w-full">
-                Available in a later phase
-              </Button>
-            </CardFooter>
           </Card>
-        ))}
-      </div>
+          
+          <div className="hidden print:block text-sm text-center text-muted-foreground pt-12">
+            Confidential - Generated by ProcureLens
+          </div>
+        </div>
+      )}
     </div>
   )
 }
