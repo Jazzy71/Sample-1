@@ -1,36 +1,51 @@
 # ProcureLens
 
-An Excel-driven procurement spend analytics product.
+An advanced, browser-native Excel-driven procurement spend analytics platform. ProcureLens allows procurement teams to upload raw Excel data and instantly receive structured insights, high-level KPIs, and beautiful data visualizations—all processed securely within the browser.
 
-## Phase 1 — Frontend Foundation
+## Features
 
-This phase establishes the complete frontend UI/UX foundation: routing, layout,
-navigation, and reusable component shells (KPI cards, chart containers, data
-tables, upload, empty/loading/error states, column-mapping preview). All
-dashboard KPIs and charts render in an empty/placeholder state — no Excel
-parsing, analytics, or backend exists yet.
+- **In-Browser Excel Processing:** Uses Web Workers to parse and map raw Excel procurement data directly in the browser (no server uploads required).
+- **Automated Data Mapping:** Heuristics engine automatically maps messy, inconsistent Excel headers to a normalized schema (`vendor_name`, `total_amount`, `po_date`, etc.).
+- **Rule-Based Insights Engine:** Automatically detects and flags Vendor Concentration risks, Missing Data anomalies, and High-Volume Micro-Transactions.
+- **Data Quality Scanner:** Scans the dataset for missing critical fields and generates an overall data completeness score.
+- **Printable Executive Reports:** Generates clean, CSS-print-optimized executive summaries ready for PDF export.
+- **Premium Glassmorphism UI:** Built with an "Apple Frosted Glass" aesthetic. Features an animated Aurora background, gorgeous SVG chart gradients, and physics-based micro-interactions using Framer Motion.
 
+## Tech Stack
+
+- **Framework:** React + Vite
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4 + shadcn/ui
+- **Animations:** Framer Motion
+- **Data Visualization:** Recharts (with custom SVG linear gradients)
+- **Data Processing:** XLSX (SheetJS) running inside Web Workers
+- **Routing:** React Router v6
+
+## Architecture
+
+```text
+Frontend UI (Premium Glassmorphism + Framer Motion)
+    ↓
+Application State (React Context)
+    ↓
+Excel Intelligence Engine (Web Worker + Heuristics + SheetJS)
+    ↓
+Normalized Procurement Data (Standardized Schema)
+    ↓
+Analytics & Insights Engine (Rule-based anomaly detection)
+    ↓
+KPIs / Charts / Reports / Actionable Insights
 ```
-Frontend UI
-    ↓
-Application State
-    ↓
-Future Excel Intelligence Engine     (Phase 2)
-    ↓
-Normalized Procurement Data          (Phase 2)
-    ↓
-Future Analytics Engine              (Phase 3)
-    ↓
-KPIs / Charts / Insights             (Phase 3)
-```
-
-## Stack
-
-Vite · React · TypeScript · Tailwind CSS v4 · shadcn/ui · React Router · Recharts (component architecture only)
 
 ## Getting started
 
 ```bash
+# Install dependencies
 npm install
+
+# Start the development server
 npm run dev
+
+# Build for production
+npm run build
 ```
