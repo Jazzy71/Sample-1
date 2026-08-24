@@ -76,7 +76,7 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <p className="px-2 py-1.5 text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">
-          Phase 1 · Frontend Foundation
+          ProcureLens · v1.0
         </p>
       </SidebarFooter>
     </SidebarRoot>
