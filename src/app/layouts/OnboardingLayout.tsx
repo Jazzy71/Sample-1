@@ -8,8 +8,8 @@ export function OnboardingLayout() {
         <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
           <BarChart3 className="size-4" aria-hidden="true" />
         </div>
-        <span className="font-heading text-sm font-semibold tracking-tight">
-          ProcureLens
+        <span className="font-heading text-lg font-semibold tracking-tight">
+          CostCompass
         </span>
       </header>
       <main className="flex flex-1 items-center justify-center px-4 pb-16">

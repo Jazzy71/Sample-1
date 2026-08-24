@@ -47,7 +47,7 @@ export function AppSidebar() {
             <BarChart3 className="size-4" aria-hidden="true" />
           </div>
           <span className="font-heading text-sm font-semibold tracking-tight group-data-[collapsible=icon]:hidden">
-            ProcureLens
+            CostCompass
           </span>
         </div>
       </SidebarHeader>
@@ -76,7 +76,7 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <p className="px-2 py-1.5 text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">
-          ProcureLens · v1.0
+          CostCompass · v1.0
         </p>
       </SidebarFooter>
     </SidebarRoot>

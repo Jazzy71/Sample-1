@@ -1,6 +1,6 @@
-# ProcureLens
+# CostCompass
 
-An advanced, browser-native Excel-driven procurement spend analytics platform. ProcureLens allows procurement teams to upload raw Excel data and instantly receive structured insights, high-level KPIs, and beautiful data visualizations—all processed securely within the browser.
+An advanced, browser-native Excel-driven procurement spend analytics platform. CostCompass allows procurement teams to upload raw Excel data and instantly receive structured insights, high-level KPIs, and beautiful data visualizations—all processed securely within the browser.
 
 ## Features
 

@@ -35,7 +35,7 @@ export function DataMappingShell() {
       <CardHeader>
         <CardTitle>Column mapping</CardTitle>
         <CardDescription>
-          Review and adjust how columns from your workbook map to standard ProcureLens fields.
+          Review and adjust how columns from your workbook map to standard CostCompass fields.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">

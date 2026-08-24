@@ -33,7 +33,7 @@ export function LandingUploadPage() {
           Turn procurement spreadsheets into spend intelligence
         </CardTitle>
         <CardDescription>
-          Upload a procurement workbook to get started. ProcureLens will
+          Upload a procurement workbook to get started. CostCompass will
           understand its structure and prepare it for analysis.
         </CardDescription>
       </CardHeader>
